@@ -1,10 +1,10 @@
-PROJECT_NAME := xyz Package
+PROJECT_NAME := mongodbatlas Package
 include build/common.mk
 
-PACK             := xyz
+PACK             := mongodbatlas
 PACKDIR          := sdk
-PROJECT          := github.com/pulumi/pulumi-${PACK}
-NODE_MODULE_NAME := @pulumi/${PACK}
+PROJECT          := github.com/Evaneos/pulumi-${PACK}
+NODE_MODULE_NAME := @evaneos/pulumi-${PACK}
 TF_NAME          := ${PACK}
 
 TFGEN           := pulumi-tfgen-${PACK}
@@ -25,16 +25,16 @@ prepare::
 	mv "cmd/pulumi-tfgen-x${EMPTY_TO_AVOID_SED}yz" cmd/pulumi-tfgen-${NAME}
 	mv "cmd/pulumi-resource-x${EMPTY_TO_AVOID_SED}yz" cmd/pulumi-resource-${NAME}
 
-	if [[ "${OS}" != "Darwin" ]]; then \
-		sed -i 's,github.com/pulumi/pulumi-xyz,${REPOSITORY},g' go.mod; \
-		find ./ ! -path './.git/*' -type f -exec sed -i 's/[x]yz/${NAME}/g' {} \; &> /dev/null; \
+	if [[ "${OS}" == "Darwin" ]]; then \
+		sed -i 's,github.com/E/pulumi-mongodbatlas,${REPOSITORY},g' go.mod; \
+		find ./ ! -path './/.git/*' -type f -exec sed -i 's/[x]yz/${NAME}/g' {} \; &> /dev/null; \
 	fi
 
-	# In MacOS the -i parameter needs an empty string to execute in place.
-	if [[ "${OS}" == "Darwin" ]]; then \
-		sed -i '' 's,github.com/pulumi/pulumi-xyz,${REPOSITORY},g' go.mod; \
-		find ./ ! -path './.git/*' -type f -exec sed -i '' 's/[x]yz/${NAME}/g' {} \; &> /dev/null; \
-	fi
+#	# In MacOS the -i parameter needs an empty string to execute in place.
+#	if [[ "${OS}" == "Darwin" ]]; then \
+#		sed -i '' 's,github.com/pulumi/pulumi-mongodbatlas,${REPOSITORY},g' go.mod; \
+#		find ./ ! -path './.git/*' -type f -exec sed -i '' 's/[x]yz/${NAME}/g' {} \; &> /dev/null; \
+#	fi
 
 # NOTE: Since the plugin is published using the nodejs style semver version
 # We set the PLUGIN_VERSION to be the same as the version we use when building
@@ -62,16 +62,16 @@ build:: tfgen provider
 		cd ./bin && $(PYTHON) setup.py build sdist
 
 tfgen::
-	go install -ldflags "-X github.com/pulumi/pulumi-${PACK}/pkg/version.Version=${VERSION}" ${PROJECT}/cmd/${TFGEN}
+	go install -ldflags "-X github.com/Evaneos/pulumi-${PACK}/pkg/version.Version=${VERSION}" ${PROJECT}/cmd/${TFGEN}
 
 provider::
-	go install -ldflags "-X github.com/pulumi/pulumi-${PACK}/pkg/version.Version=${VERSION}" ${PROJECT}/cmd/${PROVIDER}
+	go install -ldflags "-X github.com/Evaneos/pulumi-${PACK}/pkg/version.Version=${VERSION}" ${PROJECT}/cmd/${PROVIDER}
 
 lint::
 	golangci-lint run
 
 install::
-	GOBIN=$(PULUMI_BIN) go install -ldflags "-X github.com/pulumi/pulumi-${PACK}/pkg/version.Version=${VERSION}" ${PROJECT}/cmd/${PROVIDER}
+	GOBIN=$(PULUMI_BIN) go install -ldflags "-X github.com/Evaneos/pulumi-${PACK}/pkg/version.Version=${VERSION}" ${PROJECT}/cmd/${PROVIDER}
 	[ ! -e "$(PULUMI_NODE_MODULES)/$(NODE_MODULE_NAME)" ] || rm -rf "$(PULUMI_NODE_MODULES)/$(NODE_MODULE_NAME)"
 	mkdir -p "$(PULUMI_NODE_MODULES)/$(NODE_MODULE_NAME)"
 	cp -r ${PACKDIR}/nodejs/bin/. "$(PULUMI_NODE_MODULES)/$(NODE_MODULE_NAME)"

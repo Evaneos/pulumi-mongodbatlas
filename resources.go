@@ -12,23 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package xyz
+package mongodbatlas
 
 import (
 	"unicode"
 
-	"github.com/hashicorp/terraform/helper/schema"
+	tfhelperschema "github.com/hashicorp/terraform/helper/schema"
 	"github.com/hashicorp/terraform/terraform"
 	"github.com/pulumi/pulumi-terraform/pkg/tfbridge"
 	"github.com/pulumi/pulumi/pkg/resource"
 	"github.com/pulumi/pulumi/pkg/tokens"
-	"github.com/terraform-providers/terraform-provider-xyz/xyz"
+	"github.com/terraform-providers/terraform-provider-mongodbatlas/mongodbatlas"
 )
 
 // all of the token components used below.
 const (
 	// packages:
-	mainPkg = "xyz"
+	mainPkg = "mongodbatlas"
 	// modules:
 	mainMod = "index" // the y module
 )
@@ -87,26 +87,28 @@ var managedByPulumi = &tfbridge.DefaultInfo{Value: "Managed by Pulumi"}
 // Provider returns additional overlaid schema and metadata associated with the provider..
 func Provider() tfbridge.ProviderInfo {
 	// Instantiate the Terraform provider
-	p := xyz.Provider().(*schema.Provider)
+	p := mongodbatlas.Provider().(*tfhelperschema.Provider)
 
 	// Create a Pulumi provider mapping
 	prov := tfbridge.ProviderInfo{
 		P:           p,
-		Name:        "xyz",
-		Description: "A Pulumi package for creating and managing xyz cloud resources.",
-		Keywords:    []string{"pulumi", "xyz"},
+		Name:        "mongodbatlas",
+		Description: "A Pulumi package for creating and managing mongodbatlas cloud resources.",
+		Keywords:    []string{"pulumi", "mongodbatlas"},
 		License:     "Apache-2.0",
 		Homepage:    "https://pulumi.io",
-		Repository:  "https://github.com/pulumi/pulumi-xyz",
+		Repository:  "https://github.com/Evaneos/pulumi-mongodbatlas",
 		Config:      map[string]*tfbridge.SchemaInfo{
-			// Add any required configuration here, or remove the example below if
-			// no additional points are required.
-			// "region": {
-			// 	Type: makeType("region", "Region"),
-			// 	Default: &tfbridge.DefaultInfo{
-			// 		EnvVars: []string{"AWS_REGION", "AWS_DEFAULT_REGION"},
-			// 	},
-			// },
+			"public_key": {
+				Default: &tfbridge.DefaultInfo{
+					EnvVars: []string{"MONGODB_ATLAS_PUBLIC_KEY"},
+				},
+			},
+			"private_key": {
+				Default: &tfbridge.DefaultInfo{
+					EnvVars: []string{"MONGODB_ATLAS_PRIVATE_KEY"},
+				},
+			},
 		},
 		PreConfigureCallback: preConfigureCallback,
 		Resources:            map[string]*tfbridge.ResourceInfo{
@@ -114,7 +116,25 @@ func Provider() tfbridge.ProviderInfo {
 			// are below - the single line form is the common case. The multi-line form is
 			// needed only if you wish to override types or other default options.
 			//
-			// "aws_iam_role": {Tok: makeResource(mainMod, "IamRole")}
+			"mongodbatlas_database_user": {Tok: makeResource(mainMod, "DatabaseUser")},
+			"mongodbatlas_project_ip_whitelist": {Tok: makeResource(mainMod, "ProjectIpWhitelist")},
+			"mongodbatlas_cluster": {Tok: makeResource(mainMod, "Cluster")},
+			"mongodbatlas_network_container": {Tok: makeResource(mainMod, "NetworkPeeringContainer")},
+			"mongodbatlas_project": {Tok: makeResource(mainMod, "Project")},
+			"mongodbatlas_cloud_provider_snapshot": {Tok: makeResource(mainMod, "CloudProviderSnapshot")},
+			"mongodbatlas_cloud_provider_snapshot_restore_job": {Tok: makeResource(mainMod, "CloudProviderSnapshotRestoreJob")},
+			"mongodbatlas_encryption_at_rest": {Tok: makeResource(mainMod, "EncryptionAtRest")},
+			"mongodbatlas_network_peering": {Tok: makeResource(mainMod, "NetworkPeeringConnection")},
+			"mongodbatlas_private_ip_mode": {Tok: makeResource(mainMod, "PrivateIpMode")},
+			"mongodbatlas_maintenance_window": {Tok: makeResource(mainMod, "MaintenanceWindow")},
+			"mongodbatlas_auditing": {Tok: makeResource(mainMod, "Auditing")},
+			"mongodbatlas_team": {Tok: makeResource(mainMod, "Team")},
+			"mongodbatlas_custom_db_role": {Tok: makeResource(mainMod, "CustomDbRole")},
+			"mongodbatlas_global_cluster_config": {Tok: makeResource(mainMod, "GlobalClusterConfiguration")},
+			"mongodbatlas_alert_configuration": {Tok: makeResource(mainMod, "AlertConfiguration")},
+			"mongodbatlas_private_endpoint": {Tok: makeResource(mainMod, "PrivateEndpoint")},
+			"mongodbatlas_private_endpoint_interface_link": {Tok: makeResource(mainMod, "PrivateEndpointInterfaceLink")},
+			"mongodbatlas_x509_authentication_database_user": {Tok: makeResource(mainMod, "X509AuthenticationDatabaseUser")},
 			//
 			// "aws_acm_certificate": {
 			// 	Tok: makeResource(mainMod, "Certificate"),
@@ -126,7 +146,30 @@ func Provider() tfbridge.ProviderInfo {
 		DataSources: map[string]*tfbridge.DataSourceInfo{
 			// Map each resource in the Terraform provider to a Pulumi function. An example
 			// is below.
-			// "aws_ami": {Tok: makeDataSource(mainMod, "getAmi")},
+			"mongodbatlas_database_user": {Tok: makeDataSource(mainMod, "getDatabaseUser")},
+			"mongodbatlas_database_users": {Tok: makeDataSource(mainMod, "getDatabaseUsers")},
+			"mongodbatlas_project": {Tok: makeDataSource(mainMod, "getProject")},
+			"mongodbatlas_projects": {Tok: makeDataSource(mainMod, "getProjects")},
+			"mongodbatlas_cluster": {Tok: makeDataSource(mainMod, "getCluster")},
+			"mongodbatlas_clusters": {Tok: makeDataSource(mainMod, "getClusters")},
+			"mongodbatlas_cloud_provider_snapshot": {Tok: makeDataSource(mainMod, "getCloudProviderSnapshot")},
+			"mongodbatlas_cloud_provider_snapshots": {Tok: makeDataSource(mainMod, "getCloudProviderSnapshots")},
+			"mongodbatlas_cloud_provider_snapshot_restore_job": {Tok: makeDataSource(mainMod, "getCloudProviderSnapshotRestoreJob")},
+			"mongodbatlas_cloud_provider_snapshot_restore_jobs": {Tok: makeDataSource(mainMod, "getCloudProviderSnapshotRestoreJobs")},
+			"mongodbatlas_network_container": {Tok: makeDataSource(mainMod, "getNetworkPeeringContainer")},
+			"mongodbatlas_network_containers": {Tok: makeDataSource(mainMod, "getNetworkPeeringContainers")},
+			"mongodbatlas_network_peering": {Tok: makeDataSource(mainMod, "getNetworkPeeringConnection")},
+			"mongodbatlas_network_peerings": {Tok: makeDataSource(mainMod, "getNetworkPeeringConnections")},
+			"mongodbatlas_maintenance_window": {Tok: makeDataSource(mainMod, "getMaintenanceWindow")},
+			"mongodbatlas_auditing": {Tok: makeDataSource(mainMod, "getAuditing")},
+			"mongodbatlas_custom_db_roles": {Tok: makeDataSource(mainMod, "getCustomDbRoles")},
+			"mongodbatlas_custom_db_role": {Tok: makeDataSource(mainMod, "getCustomDbRole")},
+			"mongodbatlas_alert_configuration": {Tok: makeDataSource(mainMod, "getAlertConfiguration")},
+			"mongodbatlas_team": {Tok: makeDataSource(mainMod, "getTeam")},
+			"mongodbatlas_private_endpoint": {Tok: makeDataSource(mainMod, "getPrivateEndpoint")},
+			"mongodbatlas_private_endpoint_interface_link": {Tok: makeDataSource(mainMod, "getPrivateEndpointInterfaceLink")},
+			"mongodbatlas_x509_authentication_database_user": {Tok: makeDataSource(mainMod, "getX509AuthenticationDatabaseUser")},
+			"mongodbatlas_global_cluster_config": {Tok: makeDataSource(mainMod, "getGlobalClusterConfig")},
 		},
 		JavaScript: &tfbridge.JavaScriptInfo{
 			// List any npm dependencies and their versions

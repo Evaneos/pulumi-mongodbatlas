@@ -19,7 +19,6 @@ import (
 	"testing"
 
 	"github.com/pulumi/pulumi/pkg/testing/integration"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestMountTarget(t *testing.T) {
@@ -28,28 +27,28 @@ func TestMountTarget(t *testing.T) {
 	if configPoint == "" {
 		t.Skipf("Skipping test due to missing XYZ_CONFIG_POINT environment variable")
 	}
-	cwd, err := os.Getwd()
-	if !assert.NoError(t, err, "expected a valid working directory: %v", err) {
-		return
-	}
-
-	base := integration.ProgramTestOptions{
-		Config: map[string]string{
-			//"xyz:configPoint": configPoint,
-		},
-	}
-
-	baseJS := base.With(integration.ProgramTestOptions{
-		Dependencies: []string{
-			"@pulumi/xyz",
-		},
-	})
+	//cwd, err := os.Getwd()
+	//if !assert.NoError(t, err, "expected a valid working directory: %v", err) {
+	//	return
+	//}
+	//
+	//base := integration.ProgramTestOptions{
+	//	Config: map[string]string{
+	//		//"mongodbatlas:configPoint": configPoint,
+	//	},
+	//}
+	//
+	//baseJS := base.With(integration.ProgramTestOptions{
+	//	Dependencies: []string{
+	//		"@evaneos/pulumi-mongodbatlas",
+	//	},
+	//})
 
 	examples := []integration.ProgramTestOptions{
 		// Each test runs the program referenced in Dir, and then each of EditDirs
 		// runs in turn.
 		//baseJS.With(integration.ProgramTestOptions{
-		//	Dir: path.Join(cwd, "xyz_test", "step1"),
+		//	Dir: path.Join(cwd, "mongodbatlas_test", "step1"),
 		//	EditDirs: []integration.EditDir{
 		//		{
 		//			Dir:      "step2",
