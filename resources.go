@@ -82,12 +82,12 @@ func Provider() tfbridge.ProviderInfo {
 		Homepage:    "https://pulumi.io",
 		Repository:  "https://github.com/Evaneos/pulumi-mongodbatlas",
 		Config: map[string]*tfbridge.SchemaInfo{
-			"public_key": {
+			"publicKey": {
 				Default: &tfbridge.DefaultInfo{
 					EnvVars: []string{"MONGODB_ATLAS_PUBLIC_KEY"},
 				},
 			},
-			"private_key": {
+			"privateKey": {
 				Default: &tfbridge.DefaultInfo{
 					EnvVars: []string{"MONGODB_ATLAS_PRIVATE_KEY"},
 				},
