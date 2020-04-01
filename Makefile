@@ -79,6 +79,7 @@ install::
 	cd "$(PULUMI_NODE_MODULES)/$(NODE_MODULE_NAME)" && \
 		yarn install --offline --production && \
 		(yarn unlink > /dev/null 2>&1 || true) && \
+		sed -i -e "s/@pulumi\/$(PACK)/@evaneos\/$(PACK)/g" package.json && \
 		yarn link
 	cd ${PACKDIR}/python/bin && $(PIP) install --user -e .
 

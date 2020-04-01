@@ -59,20 +59,6 @@ func makeResource(mod string, res string) tokens.Type {
 	return makeType(mod+"/"+fn, res)
 }
 
-// boolRef returns a reference to the bool argument.
-func boolRef(b bool) *bool {
-	return &b
-}
-
-// stringValue gets a string value from a property map if present, else ""
-func stringValue(vars resource.PropertyMap, prop resource.PropertyKey) string {
-	val, ok := vars[prop]
-	if ok && val.IsString() {
-		return val.StringValue()
-	}
-	return ""
-}
-
 // preConfigureCallback is called before the providerConfigure function of the underlying provider.
 // It should validate that the provider can be configured, and provide actionable errors in the case
 // it cannot be. Configuration variables can be read from `vars` using the `stringValue` function -
@@ -80,9 +66,6 @@ func stringValue(vars resource.PropertyMap, prop resource.PropertyKey) string {
 func preConfigureCallback(vars resource.PropertyMap, c *terraform.ResourceConfig) error {
 	return nil
 }
-
-// managedByPulumi is a default used for some managed resources, in the absence of something more meaningful.
-var managedByPulumi = &tfbridge.DefaultInfo{Value: "Managed by Pulumi"}
 
 // Provider returns additional overlaid schema and metadata associated with the provider..
 func Provider() tfbridge.ProviderInfo {
@@ -98,7 +81,7 @@ func Provider() tfbridge.ProviderInfo {
 		License:     "Apache-2.0",
 		Homepage:    "https://pulumi.io",
 		Repository:  "https://github.com/Evaneos/pulumi-mongodbatlas",
-		Config:      map[string]*tfbridge.SchemaInfo{
+		Config: map[string]*tfbridge.SchemaInfo{
 			"public_key": {
 				Default: &tfbridge.DefaultInfo{
 					EnvVars: []string{"MONGODB_ATLAS_PUBLIC_KEY"},
@@ -111,30 +94,36 @@ func Provider() tfbridge.ProviderInfo {
 			},
 		},
 		PreConfigureCallback: preConfigureCallback,
-		Resources:            map[string]*tfbridge.ResourceInfo{
+		Resources: map[string]*tfbridge.ResourceInfo{
 			// Map each resource in the Terraform provider to a Pulumi type. Two examples
 			// are below - the single line form is the common case. The multi-line form is
 			// needed only if you wish to override types or other default options.
 			//
-			"mongodbatlas_database_user": {Tok: makeResource(mainMod, "DatabaseUser")},
-			"mongodbatlas_project_ip_whitelist": {Tok: makeResource(mainMod, "ProjectIpWhitelist")},
-			"mongodbatlas_cluster": {Tok: makeResource(mainMod, "Cluster")},
-			"mongodbatlas_network_container": {Tok: makeResource(mainMod, "NetworkPeeringContainer")},
-			"mongodbatlas_project": {Tok: makeResource(mainMod, "Project")},
+			"mongodbatlas_database_user":           {Tok: makeResource(mainMod, "DatabaseUser")},
+			"mongodbatlas_project_ip_whitelist":    {Tok: makeResource(mainMod, "ProjectIpWhitelist")},
+			"mongodbatlas_cluster":                 {Tok: makeResource(mainMod, "Cluster")},
+			"mongodbatlas_network_container":       {Tok: makeResource(mainMod, "NetworkPeeringContainer")},
+			"mongodbatlas_project":                 {Tok: makeResource(mainMod, "Project")},
 			"mongodbatlas_cloud_provider_snapshot": {Tok: makeResource(mainMod, "CloudProviderSnapshot")},
-			"mongodbatlas_cloud_provider_snapshot_restore_job": {Tok: makeResource(mainMod, "CloudProviderSnapshotRestoreJob")},
-			"mongodbatlas_encryption_at_rest": {Tok: makeResource(mainMod, "EncryptionAtRest")},
-			"mongodbatlas_network_peering": {Tok: makeResource(mainMod, "NetworkPeeringConnection")},
-			"mongodbatlas_private_ip_mode": {Tok: makeResource(mainMod, "PrivateIpMode")},
-			"mongodbatlas_maintenance_window": {Tok: makeResource(mainMod, "MaintenanceWindow")},
-			"mongodbatlas_auditing": {Tok: makeResource(mainMod, "Auditing")},
-			"mongodbatlas_team": {Tok: makeResource(mainMod, "Team")},
-			"mongodbatlas_custom_db_role": {Tok: makeResource(mainMod, "CustomDbRole")},
+			"mongodbatlas_cloud_provider_snapshot_restore_job": {
+				Tok: makeResource(mainMod, "CloudProviderSnapshotRestoreJob"),
+			},
+			"mongodbatlas_encryption_at_rest":    {Tok: makeResource(mainMod, "EncryptionAtRest")},
+			"mongodbatlas_network_peering":       {Tok: makeResource(mainMod, "NetworkPeeringConnection")},
+			"mongodbatlas_private_ip_mode":       {Tok: makeResource(mainMod, "PrivateIpMode")},
+			"mongodbatlas_maintenance_window":    {Tok: makeResource(mainMod, "MaintenanceWindow")},
+			"mongodbatlas_auditing":              {Tok: makeResource(mainMod, "Auditing")},
+			"mongodbatlas_team":                  {Tok: makeResource(mainMod, "Team")},
+			"mongodbatlas_custom_db_role":        {Tok: makeResource(mainMod, "CustomDbRole")},
 			"mongodbatlas_global_cluster_config": {Tok: makeResource(mainMod, "GlobalClusterConfiguration")},
-			"mongodbatlas_alert_configuration": {Tok: makeResource(mainMod, "AlertConfiguration")},
-			"mongodbatlas_private_endpoint": {Tok: makeResource(mainMod, "PrivateEndpoint")},
-			"mongodbatlas_private_endpoint_interface_link": {Tok: makeResource(mainMod, "PrivateEndpointInterfaceLink")},
-			"mongodbatlas_x509_authentication_database_user": {Tok: makeResource(mainMod, "X509AuthenticationDatabaseUser")},
+			"mongodbatlas_alert_configuration":   {Tok: makeResource(mainMod, "AlertConfiguration")},
+			"mongodbatlas_private_endpoint":      {Tok: makeResource(mainMod, "PrivateEndpoint")},
+			"mongodbatlas_private_endpoint_interface_link": {
+				Tok: makeResource(mainMod, "PrivateEndpointInterfaceLink"),
+			},
+			"mongodbatlas_x509_authentication_database_user": {
+				Tok: makeResource(mainMod, "X509AuthenticationDatabaseUser"),
+			},
 			//
 			// "aws_acm_certificate": {
 			// 	Tok: makeResource(mainMod, "Certificate"),
@@ -146,29 +135,37 @@ func Provider() tfbridge.ProviderInfo {
 		DataSources: map[string]*tfbridge.DataSourceInfo{
 			// Map each resource in the Terraform provider to a Pulumi function. An example
 			// is below.
-			"mongodbatlas_database_user": {Tok: makeDataSource(mainMod, "getDatabaseUser")},
-			"mongodbatlas_database_users": {Tok: makeDataSource(mainMod, "getDatabaseUsers")},
-			"mongodbatlas_project": {Tok: makeDataSource(mainMod, "getProject")},
-			"mongodbatlas_projects": {Tok: makeDataSource(mainMod, "getProjects")},
-			"mongodbatlas_cluster": {Tok: makeDataSource(mainMod, "getCluster")},
-			"mongodbatlas_clusters": {Tok: makeDataSource(mainMod, "getClusters")},
-			"mongodbatlas_cloud_provider_snapshot": {Tok: makeDataSource(mainMod, "getCloudProviderSnapshot")},
+			"mongodbatlas_database_user":            {Tok: makeDataSource(mainMod, "getDatabaseUser")},
+			"mongodbatlas_database_users":           {Tok: makeDataSource(mainMod, "getDatabaseUsers")},
+			"mongodbatlas_project":                  {Tok: makeDataSource(mainMod, "getProject")},
+			"mongodbatlas_projects":                 {Tok: makeDataSource(mainMod, "getProjects")},
+			"mongodbatlas_cluster":                  {Tok: makeDataSource(mainMod, "getCluster")},
+			"mongodbatlas_clusters":                 {Tok: makeDataSource(mainMod, "getClusters")},
+			"mongodbatlas_cloud_provider_snapshot":  {Tok: makeDataSource(mainMod, "getCloudProviderSnapshot")},
 			"mongodbatlas_cloud_provider_snapshots": {Tok: makeDataSource(mainMod, "getCloudProviderSnapshots")},
-			"mongodbatlas_cloud_provider_snapshot_restore_job": {Tok: makeDataSource(mainMod, "getCloudProviderSnapshotRestoreJob")},
-			"mongodbatlas_cloud_provider_snapshot_restore_jobs": {Tok: makeDataSource(mainMod, "getCloudProviderSnapshotRestoreJobs")},
-			"mongodbatlas_network_container": {Tok: makeDataSource(mainMod, "getNetworkPeeringContainer")},
-			"mongodbatlas_network_containers": {Tok: makeDataSource(mainMod, "getNetworkPeeringContainers")},
-			"mongodbatlas_network_peering": {Tok: makeDataSource(mainMod, "getNetworkPeeringConnection")},
-			"mongodbatlas_network_peerings": {Tok: makeDataSource(mainMod, "getNetworkPeeringConnections")},
-			"mongodbatlas_maintenance_window": {Tok: makeDataSource(mainMod, "getMaintenanceWindow")},
-			"mongodbatlas_auditing": {Tok: makeDataSource(mainMod, "getAuditing")},
-			"mongodbatlas_custom_db_roles": {Tok: makeDataSource(mainMod, "getCustomDbRoles")},
-			"mongodbatlas_custom_db_role": {Tok: makeDataSource(mainMod, "getCustomDbRole")},
+			"mongodbatlas_cloud_provider_snapshot_restore_job": {
+				Tok: makeDataSource(mainMod, "getCloudProviderSnapshotRestoreJob"),
+			},
+			"mongodbatlas_cloud_provider_snapshot_restore_jobs": {
+				Tok: makeDataSource(mainMod, "getCloudProviderSnapshotRestoreJobs"),
+			},
+			"mongodbatlas_network_container":   {Tok: makeDataSource(mainMod, "getNetworkPeeringContainer")},
+			"mongodbatlas_network_containers":  {Tok: makeDataSource(mainMod, "getNetworkPeeringContainers")},
+			"mongodbatlas_network_peering":     {Tok: makeDataSource(mainMod, "getNetworkPeeringConnection")},
+			"mongodbatlas_network_peerings":    {Tok: makeDataSource(mainMod, "getNetworkPeeringConnections")},
+			"mongodbatlas_maintenance_window":  {Tok: makeDataSource(mainMod, "getMaintenanceWindow")},
+			"mongodbatlas_auditing":            {Tok: makeDataSource(mainMod, "getAuditing")},
+			"mongodbatlas_custom_db_roles":     {Tok: makeDataSource(mainMod, "getCustomDbRoles")},
+			"mongodbatlas_custom_db_role":      {Tok: makeDataSource(mainMod, "getCustomDbRole")},
 			"mongodbatlas_alert_configuration": {Tok: makeDataSource(mainMod, "getAlertConfiguration")},
-			"mongodbatlas_team": {Tok: makeDataSource(mainMod, "getTeam")},
-			"mongodbatlas_private_endpoint": {Tok: makeDataSource(mainMod, "getPrivateEndpoint")},
-			"mongodbatlas_private_endpoint_interface_link": {Tok: makeDataSource(mainMod, "getPrivateEndpointInterfaceLink")},
-			"mongodbatlas_x509_authentication_database_user": {Tok: makeDataSource(mainMod, "getX509AuthenticationDatabaseUser")},
+			"mongodbatlas_team":                {Tok: makeDataSource(mainMod, "getTeam")},
+			"mongodbatlas_private_endpoint":    {Tok: makeDataSource(mainMod, "getPrivateEndpoint")},
+			"mongodbatlas_private_endpoint_interface_link": {
+				Tok: makeDataSource(mainMod, "getPrivateEndpointInterfaceLink"),
+			},
+			"mongodbatlas_x509_authentication_database_user": {
+				Tok: makeDataSource(mainMod, "getX509AuthenticationDatabaseUser"),
+			},
 			"mongodbatlas_global_cluster_config": {Tok: makeDataSource(mainMod, "getGlobalClusterConfig")},
 		},
 		JavaScript: &tfbridge.JavaScriptInfo{
