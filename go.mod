@@ -10,7 +10,7 @@ replace (
 require (
 	github.com/hashicorp/terraform v0.12.1
 	github.com/pkg/errors v0.8.0
-	github.com/pulumi/pulumi v0.17.10
+	github.com/pulumi/pulumi v0.17.6
 	github.com/pulumi/pulumi-terraform v0.18.3
 	github.com/stretchr/testify v1.4.0
 	github.com/terraform-providers/terraform-provider-mongodbatlas v0.4.1
